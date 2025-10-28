@@ -1,3 +1,6 @@
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 
@@ -40,31 +43,44 @@ export default function Listados() {
   };
 
   return (
-    <div>
+  <div className="p-m-4">
+    <h2>PokeListados</h2>
 
-      <div className="p-mb-3">
-        <Button 
-          label={loading ? 'Cargando...' : 'Cargar datos'} 
-          icon="pi pi-cloud-download" 
-          onClick={fetchBoth} 
-          disabled={loading} 
-        />
-        <Button 
-          label="Recargar" 
-          icon="pi pi-refresh" 
-          className="p-ml-2" 
-          onClick={fetchBoth} 
-          disabled={loading} 
-        />
+    <div className="p-mb-3">
+      <Button 
+        label={loading ? 'Cargando...' : 'Cargar datos'} 
+        icon="pi pi-cloud-download" 
+        onClick={fetchBoth} 
+        disabled={loading} 
+      />
+      <Button 
+        label="Recargar" 
+        icon="pi pi-refresh" 
+        className="p-ml-2" 
+        onClick={fetchBoth} 
+        disabled={loading} 
+      />
+    </div>
+
+    {loading && <p>Cargando...</p>}
+    {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+
+    <div className="p-grid p-mt-4">
+      <div className="p-col-12 p-md-6">
+        <h3>Pokémon</h3>
+        <DataTable value={pokemons} responsiveLayout="scroll">
+          <Column field="name" header="Nombre" />
+        </DataTable>
       </div>
 
-      {loading && <p>Cargando...</p>}
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-
-      <div>
-        <p>Pokémons cargados: {pokemons.length}</p>
-        <p>Habilidades cargadas: {abilities.length}</p>
+      <div className="p-col-12 p-md-6">
+        <h3>Habilidades</h3>
+        <DataTable value={abilities} responsiveLayout="scroll">
+          <Column field="name" header="Nombre" />
+        </DataTable>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
