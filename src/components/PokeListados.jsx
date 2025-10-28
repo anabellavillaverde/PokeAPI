@@ -13,18 +13,18 @@ export default function PokeListados() {
   const [pokemons, setPokemons] = useState([]);
   const [abilities, setAbilities] = useState([]);
 
-  const [selectedPokemon, setSelectedPokemon] = useState(null); //pokemon
-  const [pokemonDetails, setPokemonDetails] = useState(null);   //detalles del pokemon
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [pokemonDetails, setPokemonDetails] = useState(null);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
 
-  //ID desde la URL
+  //extraer ID de la URLnpm run dev
   const extractIdFromUrl = (url) => {
     const match = url.match(/\/(\d+)\/$/);
-    return match ? match[1] : '-';
+    return match ? parseInt(match[1], 10) : '-';
   };
 
-  //cargar de pokemons
+  //cargar Pokémon y habilidades
   const fetchBoth = async () => {
     setLoading(true);
     setError(null);
@@ -45,15 +45,17 @@ export default function PokeListados() {
 
       const [pokemonJson, abilityJson] = await Promise.all(responses.map(r => r.json()));
 
-      setPokemons(pokemonJson.results.map(p => ({
+      // Agregar ID extraído de la URL
+      setPokemons((pokemonJson.results || []).map(p => ({
         id: extractIdFromUrl(p.url),
         name: p.name,
         url: p.url
       })));
 
-      setAbilities(abilityJson.results.map(a => ({
+      setAbilities((abilityJson.results || []).map(a => ({
         id: extractIdFromUrl(a.url),
-        name: a.name
+        name: a.name,
+        url: a.url
       })));
 
     } catch (err) {
@@ -64,7 +66,6 @@ export default function PokeListados() {
     }
   };
 
-  //fila click
   const handleRowClick = async (pokemon) => {
     setSelectedPokemon(pokemon);
     setDialogVisible(true);
@@ -88,7 +89,7 @@ export default function PokeListados() {
     }
   };
 
-  //cerrar dialogo
+  // Cerrar dialog
   const closeDialog = () => {
     setDialogVisible(false);
     setPokemonDetails(null);
@@ -140,7 +141,6 @@ export default function PokeListados() {
         </div>
       </div>
 
-      {/*Dialog con detalles del Pokémon */}
       <Dialog 
         header={selectedPokemon ? `Detalles de ${selectedPokemon.name}` : 'Detalles'}
         visible={dialogVisible} 
@@ -173,3 +173,4 @@ export default function PokeListados() {
     </div>
   );
 }
+
